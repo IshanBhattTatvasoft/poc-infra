@@ -262,6 +262,7 @@ Resources:
             NoncurrentVersionExpirationInDays: 1
             Status: Enabled
 
+#versio1
   UIBuildArtifactsStoreBucket:
     Type: 'AWS::S3::Bucket'
     Properties:
@@ -296,6 +297,45 @@ Resources:
               Service: "cloudfront.amazonaws.com"
             Action: "s3:GetObject"
             Resource: !Sub "arn:aws:s3:::${UIBuildArtifactsStoreBucket}/*"
+            Condition:
+              StringEquals:
+                AWS:SourceArn: "arn:aws:cloudfront::057297422439:distribution/E15ISXOPW45Z64"
+
+#version2
+  UIBuildArtifactsStoreBucketversion2:
+    Type: 'AWS::S3::Bucket'
+    Properties:
+      BucketEncryption:
+        ServerSideEncryptionConfiguration:
+          - ServerSideEncryptionByDefault:
+              SSEAlgorithm: AES256
+      BucketName: ui-artifacts-poc-zero-downtime-version-2
+      PublicAccessBlockConfiguration:
+        BlockPublicAcls: true
+        BlockPublicPolicy: true
+        IgnorePublicAcls: true
+        RestrictPublicBuckets: true
+      WebsiteConfiguration:
+        IndexDocument: index.html  # The default document (can be any HTML file)
+        ErrorDocument: error.html
+      LifecycleConfiguration:
+        Rules:
+          - ExpirationInDays: 1
+            NoncurrentVersionExpirationInDays: 1
+            Status: Enabled
+  BucketPolicyversion2:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref UIBuildArtifactsStoreBucketversion2
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Sid: "AllowCloudFrontServicePrincipal"
+            Effect: "Allow"
+            Principal:
+              Service: "cloudfront.amazonaws.com"
+            Action: "s3:GetObject"
+            Resource: !Sub "arn:aws:s3:::${UIBuildArtifactsStoreBucketversion2}/*"
             Condition:
               StringEquals:
                 AWS:SourceArn: "arn:aws:cloudfront::057297422439:distribution/E15ISXOPW45Z64"
