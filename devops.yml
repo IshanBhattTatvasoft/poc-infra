@@ -391,9 +391,9 @@ Resources:
         Image: "aws/codebuild/standard:6.0"
         Type: LINUX_CONTAINER
         EnvironmentVariables:
-           - Name: ARTIFACTBUCKETNAME
+           - Name: UIARTIFACTBUCKETNAME
              Type: PLAINTEXT
-             Value: !Ref ArtifactStoreS3Bucket
+             Value: !Ref UIBuildArtifactsStoreBucket
           #  - Name: POCVERSION
           #    Type: PLAINTEXT
           #    Value: "v1"  # Modify this at runtime to pass different directory names
